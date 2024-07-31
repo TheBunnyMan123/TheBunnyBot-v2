@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Events, GatewayIntentBits, Collection } = require('discord.js');
-const { token } = require('./config.json');
+const { REST, Routes, Client, Events, GatewayIntentBits, Collection, SlashCommandBuilder } = require('discord.js');
+const { token, clientId, guildId } = require('./config.json');
 
 const client = new Client({
     intents: [
@@ -18,6 +18,7 @@ client.commands = new Collection();
 // eslint-disable-next-line no-undef
 const commandFolderPath = path.join(__dirname, 'commands');
 const commandsFolder = fs.readdirSync(commandFolderPath);
+let commands = [];
 
 for (const folder of commandsFolder) {
     const commandsPath = path.join(commandFolderPath, folder);
@@ -29,18 +30,56 @@ for (const folder of commandsFolder) {
 		// Set a new item in the Collection with the key as the command name and the value as the exported module
 		if ('data' in command && 'execute' in command) {
 			client.commands.set(command.data.name, command);
+
+			if (command.data instanceof SlashCommandBuilder) {
+				commands.push(command.data.toJSON());
+			} else {
+				commands.push(command.data);
+			}
 		} else {
 			console.log(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
 		}
 	}
 }
 
+const rest = new REST().setToken(token);
+
+// (async () => {
+//     await rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: [] })
+// 	    .then(() => console.log('Successfully deleted all guild commands.'))
+// 	    .catch(console.error);
+
+//     await rest.put(Routes.applicationCommands(clientId), { body: [] })
+// 	    .then(() => console.log('Successfully deleted all application commands.'))
+// 	    .catch(console.error);
+
+// 	try {
+// 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+
+//         // Register commands in test guild
+// 		await rest.put(
+// 			Routes.applicationGuildCommands(clientId, guildId),
+// 			{ body: commands },
+// 		);
+
+//         // Register commands globally
+//         const data = await rest.put(
+//             Routes.applicationCommands(clientId),
+//             { body: commands },
+//         );
+
+// 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+// 	} catch (error) {
+// 		console.error(error);
+// 	}
+// })();
+
 client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isChatInputCommand()) {
+    if (!interaction.isChatInputCommand() && !interaction.isMessageContextMenuCommand() && !interaction.isUserContextMenuCommand()) {
         return;
     }
 
-	console.log(interaction);
+	// console.log(interaction);
 
     const command = interaction.client.commands.get(interaction.commandName);
 

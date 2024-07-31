@@ -8,7 +8,7 @@ module.exports = {
 		const embed = new EmbedBuilder()
             .setColor(Math.round(Math.random() * 16777215))
             .setTitle('Pong!')
-            .setFooter({ text: 'TheKillerBunny', iconURL: 'https://avatars.githubusercontent.com/u/69465699' })
+            .setFooter({ text: 'Made by TheKillerBunny', iconURL: 'https://avatars.githubusercontent.com/u/69465699' })
             .setTimestamp(Date.now())
 
         await interaction.reply({ embeds: [embed] });
