@@ -28,13 +28,17 @@ module.exports = {
 	async execute(interaction) {
         var guild = interaction.guild
 
-        const embed = new EmbedBuilder()
-            .setColor(Math.round(Math.random() * 0xFFFFFF))
-            .setTitle(`${guild.name}'s Info`)
-            .setFooter({ text: 'Made by TheKillerBunny', iconURL: 'https://avatars.githubusercontent.com/u/69465699' })
-            .setTimestamp(Date.now())
-            .setDescription(`* ID: ${guild.id}${guild.description && `\n* Description: ${guild.description}` || ``}\n* Owner: <@${guild.ownerId}>\n* Created: ${guild.createdAt.toString()}\n* Member Count: ${guild.memberCount}${guild.afkChannel && `\n* AFK Channel: <#${guild.afkChannelId}>` || ``}${guild.afkChannel && `\n* AFK Channel: <#${guild.afkChannelId}>` || ``}${guild.icon && `\n* Icon: ${guild.iconURL()}` || ``}${guild.banner && `\n* Banner: ${guild.bannerURL()}` || ``}`)
+        if (guild != null) {
+            const embed = new EmbedBuilder()
+                .setColor(Math.round(Math.random() * 0xFFFFFF))
+                .setTitle(`${guild.name}'s Info`)
+                .setFooter({ text: 'Made by TheKillerBunny', iconURL: 'https://avatars.githubusercontent.com/u/69465699' })
+                .setTimestamp(Date.now())
+                .setDescription(`* ID: ${guild.id}${guild.description && `\n* Description: ${guild.description}` || ``}\n* Owner: <@${guild.ownerId}>\n* Created: ${guild.createdAt.toString()}\n* Member Count: ${guild.memberCount}${guild.afkChannel && `\n* AFK Channel: <#${guild.afkChannelId}>` || ``}${guild.afkChannel && `\n* AFK Channel: <#${guild.afkChannelId}>` || ``}${guild.icon && `\n* Icon: ${guild.iconURL()}` || ``}${guild.banner && `\n* Banner: ${guild.bannerURL()}` || ``}`)
 
-		await interaction.reply({ embeds: [embed] });
+		    await interaction.reply({ embeds: [embed] });
+        }else {
+            await interaction.reply('tf just happened, i\'m not in a guild for some reason')
+        }
 	},
 };
